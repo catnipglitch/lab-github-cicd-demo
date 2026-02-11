@@ -1,9 +1,13 @@
 # lab-github-cicd-demo-public
 
-GitHub Actions の CI/CD ワークフローを試すためのシンプルな Python プロジェクトです。`main.py` からメッセージを出力する CLI を実行でき、Sentry へのエラーレポート送信をオプションで有効化できます。
+GitHub Actions の CI/CD ワークフローを試すためのシンプルな Python プロジェクトです。`main.py` からメッセージを出力する CLI と、ビルド情報を表示する Flask Web アプリ（`app.py`）を提供します。Sentry へのエラーレポート送信をオプションで有効化できます。
 
 ## プロジェクト構成
 - `main.py`: CLI エントリーポイント。Sentry DSN を検出して初期化し、リポジトリ紹介メッセージを出力します。
+- `app.py`: Flask Web アプリケーション。ビルド情報（ブランチ、コミット SHA、ビルド時刻など）とロゴを表示します。
+- `templates/`: Flask テンプレート（`index.html`）
+- `static/images/`: 静的ファイル（`logo.png`）
+- `Dockerfile`: Cloud Run デプロイ用のコンテナイメージ定義
 - `pyproject.toml`: パッケージ名・依存関係などのメタデータを管理します。
 - `uv.lock`: [uv](https://github.com/astral-sh/uv) 向けのロックファイルです。`uv sync --dev` で同じ依存関係（開発用を含む）を再現できます。
 - `lab-github-cicd-demo-public.code-workspace`: VS Code 用のワークスペース設定です。
@@ -52,8 +56,83 @@ SENTRY_TRACES_SAMPLE_RATE=1.0
 
 ## 実行方法
 
+### CLI ツール
+
 ```bash
 python main.py
 ```
 
 `main.py` は CLI としてメッセージを表示し、Sentry が構成されていれば初期化およびトレース設定も行います。
+
+### Flask Web アプリ
+
+```bash
+# ローカル開発サーバーで起動（デフォルト: http://localhost:5000）
+python app.py
+
+# または uv 経由で起動
+uv run python app.py
+```
+
+ブラウザで `http://localhost:5000` にアクセスすると、以下のページが表示されます：
+- `/` - ビルド情報とロゴを表示するメインページ
+- `/health` - ヘルスチェック（JSON レスポンス）
+- `/api/info` - ビルド情報を JSON で返す API
+
+### Docker でのビルドと実行
+
+```bash
+# Docker イメージをビルド
+docker build \
+  --build-arg BUILD_TIME="$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
+  --build-arg GIT_BRANCH="$(git branch --show-current)" \
+  --build-arg GIT_COMMIT_SHA="$(git rev-parse HEAD)" \
+  --build-arg GITHUB_RUN_ID="local" \
+  --build-arg GITHUB_RUN_NUMBER="0" \
+  -t github-cicd-demo .
+
+# コンテナを起動
+docker run -p 8080:8080 github-cicd-demo
+
+# ブラウザで http://localhost:8080 にアクセス
+```
+## テスト
+
+```bash
+# 全テストを実行
+uv run pytest
+
+# Flask アプリのテストのみ実行
+uv run pytest tests/test_app.py -v
+
+# CLI のテストのみ実行
+uv run pytest tests/test_main.py -v
+
+# カバレッジ付きで実行
+uv run pytest --cov=. --cov-report=html
+```
+
+## Cloud Run へのデプロイ（手動）
+
+このプロジェクトは Cloud Run へのデプロイに対応しています。以下は手動デプロイの例です：
+
+```bash
+# Google Cloud プロジェクト ID を設定
+export PROJECT_ID="your-gcp-project-id"
+
+# Cloud Build でイメージをビルド
+gcloud builds submit \
+  --tag gcr.io/$PROJECT_ID/github-cicd-demo \
+  --project $PROJECT_ID
+
+# Cloud Run にデプロイ
+gcloud run deploy github-cicd-demo \
+  --image gcr.io/$PROJECT_ID/github-cicd-demo \
+  --platform managed \
+  --region us-central1 \
+  --allow-unauthenticated \
+  --set-env-vars SENTRY_DSN="${SENTRY_DSN}" \
+  --project $PROJECT_ID
+```
+
+ビルド引数を渡す場合は、`cloudbuild.yaml` を作成して設定してください。
