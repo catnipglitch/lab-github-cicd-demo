@@ -1,6 +1,10 @@
 # プッシュ時にシンプルなジョブを起動し "Hello, world" を出力するワークフローテスト
 name: Push and Hello world!                      # ワークフロー名
 on: push                          # イベント（プッシュ時に起動）
+
+permissions:
+  contents: read
+
 jobs:                             # ジョブの定義
   hello:                          # ジョブID
     runs-on: ubuntu-latest        # ランナー（Ubuntuで実行）
