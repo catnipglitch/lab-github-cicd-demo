@@ -8,6 +8,10 @@ on:
         default: Hello                     # 入力パラメータのデフォルト値
         required: true                     # 入力パラメータの必須フラグ
         description: A cheerful word       # 入力パラメータの概要
+
+permissions:
+  contents: read
+
 jobs:
   run:
     runs-on: ubuntu-latest

@@ -2,6 +2,10 @@
 name: Dispatch Print Variables DEMO
 on:
   workflow_dispatch:               # 手動イベントで起動
+
+permissions:
+  contents: read
+
 jobs:
   print-context:                   # ジョブID
     runs-on: ubuntu-latest         # ランナー（Ubuntuで実行）

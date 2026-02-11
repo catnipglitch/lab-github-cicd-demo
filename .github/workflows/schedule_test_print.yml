@@ -3,6 +3,10 @@ name: Schedule Test                     # ワークフロー名
 on:
   schedule:                       # イベント（スケジュール時に起動）
     - cron: '*/15 * * * *'             # 15分ごとに実行（UTC時間）
+
+permissions:
+  contents: read
+
 jobs:                             # ジョブの定義
   schedule:                       # ジョブID
     runs-on: ubuntu-latest        # ランナー（Ubuntuで実行）

@@ -68,7 +68,11 @@ db.sqlite3-journal
 # Flask stuff:
 instance/
 .webassets-cache
-static/
+
+# Generated static files (if build process exists)
+# static/dist/
+# static/generated/
+# static/bundles/
 
 # Scrapy stuff:
 .scrapy
