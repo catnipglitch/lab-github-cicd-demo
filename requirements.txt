@@ -32,5 +32,5 @@ ruff==0.14.2
     # via lab-github-cicd-demo (pyproject.toml)
 sentry-sdk==2.40.0
     # via lab-github-cicd-demo (pyproject.toml)
-urllib3==2.5.0
+urllib3==2.6.3
     # via sentry-sdk
