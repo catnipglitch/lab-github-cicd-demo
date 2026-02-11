@@ -1,0 +1,65 @@
+# Python キャッシュ
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# テスト・カバレッジ
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+.tox/
+.nox/
+
+# 仮想環境
+.venv/
+venv/
+ENV/
+env/
+
+# Git
+.git/
+.gitignore
+.github/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# 環境変数・シークレット
+.env
+.env.*
+
+# ドキュメント
+*.md
+!README.md
+docs/
+
+# テスト
+tests/
+*.test.py
+
+# CI/CD
+.circleci/
+.travis.yml
+
+# その他
+*.log
+*.sqlite
+*.db
+.DS_Store
+Thumbs.db
+
+# Agent ログ
+.agents/
+
+# 既存の static（Docker ビルド時に images/ から作成）
+static/
+
+# main.py は不要（CLI ツール）
+main.py

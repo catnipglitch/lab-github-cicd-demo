@@ -1,38 +1,42 @@
 ---
-name: Bug report
-about: Create a report to help us improve
-title: ''
-labels: ''
+name: バグ報告
+about: バグを報告してプロジェクトの改善に協力する
+title: '[BUG] '
+labels: 'bug'
 assignees: ''
 
 ---
 
-**Describe the bug**
-A clear and concise description of what the bug is.
+## バグの概要
+<!-- バグの内容を簡潔に説明してください -->
 
-**To Reproduce**
-Steps to reproduce the behavior:
-1. Go to '...'
-2. Click on '....'
-3. Scroll down to '....'
-4. See error
+## 再現手順
+<!-- バグを再現するための手順を記載してください -->
+1.
+2.
+3.
+4.
 
-**Expected behavior**
-A clear and concise description of what you expected to happen.
+## 期待される動作
+<!-- 本来どのような動作を期待していたか記載してください -->
 
-**Screenshots**
-If applicable, add screenshots to help explain your problem.
+## 実際の動作
+<!-- 実際にどのような動作をしたか記載してください -->
 
-**Desktop (please complete the following information):**
- - OS: [e.g. iOS]
- - Browser [e.g. chrome, safari]
- - Version [e.g. 22]
+## 環境情報
+- OS: [e.g. Ubuntu 22.04, macOS 14.0, Windows 11]
+- Python バージョン: [e.g. 3.13.8]
+- 実行方法: [e.g. `python main.py`, `python app.py`, Docker]
+- ブラウザ（Web アプリの場合）: [e.g. Chrome 120, Safari 17]
 
-**Smartphone (please complete the following information):**
- - Device: [e.g. iPhone6]
- - OS: [e.g. iOS8.1]
- - Browser [e.g. stock browser, safari]
- - Version [e.g. 22]
+## ログ・エラーメッセージ
+<!-- エラーメッセージやログがあれば貼り付けてください -->
+```
+ここにログを貼り付け
+```
 
-**Additional context**
-Add any other context about the problem here.
+## スクリーンショット
+<!-- 該当する場合、スクリーンショットを追加してください -->
+
+## 追加情報
+<!-- その他、問題に関する情報があれば記載してください -->

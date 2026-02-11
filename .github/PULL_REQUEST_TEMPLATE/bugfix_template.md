@@ -23,6 +23,9 @@
 - [ ] 該当のバグが再現しないことを確認
 - [ ] 新たな副作用が発生していない
 - [ ] Lint / Format / Test がすべて通過
+  - [ ] `uv run pytest` - 全テスト通過
+  - [ ] `uv run pylint` - Pylint チェック通過
+  - [ ] GitHub Actions ワークフローが全て成功
 
 ## 関連Issue
 Fixes #

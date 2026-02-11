@@ -15,8 +15,15 @@
 
 ## 確認項目
 - [ ] Lint / Format / Test がすべて通過
+  - [ ] `uv run pytest` - 全テスト通過
+  - [ ] `uv run pylint` - Pylint チェック通過
+  - [ ] GitHub Actions ワークフローが全て成功
 - [ ] 既存機能に影響がないことを確認
+  - [ ] CLI (`python main.py`) が正常に動作
+  - [ ] Flask アプリ (`python app.py`) が正常に動作（該当する場合）
 - [ ] README / ドキュメントを更新
+  - [ ] 新機能の使い方を README に追加
+  - [ ] ワークフロー追加時は README のワークフロー表を更新
 
 ## 関連Issue
 Closes #
