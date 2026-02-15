@@ -41,8 +41,8 @@ COPY app.py ./
 COPY templates ./templates
 COPY pyproject.toml ./
 
-# 静的ファイル（ロゴ）をコピー
-COPY images/logo.png ./static/images/logo.png
+# 静的ファイルをコピー
+COPY static ./static
 
 # 仮想環境の Python を PATH に追加
 ENV PATH="/app/.venv/bin:$PATH"
