@@ -58,8 +58,8 @@ Thumbs.db
 # Agent ログ
 .agents/
 
-# 既存の static（Docker ビルド時に images/ から作成）
-static/
+# static 内の不要ファイルのみ除外（logo.png 等は含める）
+# static/
 
 # main.py は不要（CLI ツール）
 main.py
