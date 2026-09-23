@@ -11,10 +11,13 @@ import pytest
 @pytest.fixture
 def client():
     """Flask テストクライアントを作成する。"""
-    # 環境変数をクリーンにして Sentry 初期化を防ぐ
+    # 環境変数をクリーンにして Sentry / Auth0 初期化を防ぐ
     env_backup = os.environ.copy()
     if "SENTRY_DSN" in os.environ:
         del os.environ["SENTRY_DSN"]
+    for key in ("AUTH0_DOMAIN", "AUTH0_CLIENT_ID", "AUTH0_CLIENT_SECRET",
+                "AUTH0_SECRET", "AUTH0_REDIRECT_URI"):
+        os.environ.pop(key, None)
 
     # テスト用のビルド情報を設定
     os.environ["BUILD_TIME"] = "2024-01-01T00:00:00Z"
@@ -28,8 +31,9 @@ def client():
     sys.path.insert(0, str(project_root))
 
     # 既にインポートされている場合は削除してリフレッシュ
-    if "app" in sys.modules:
-        del sys.modules["app"]
+    for mod_name in ("app", "auth"):
+        if mod_name in sys.modules:
+            del sys.modules[mod_name]
 
     import app as flask_app
 
@@ -69,6 +73,7 @@ def test_api_info_endpoint(client):
     assert data["git_commit_short"] == "abc123de"
     assert data["github_run_number"] == "42"
     assert data["sentry_enabled"] is False  # テストでは Sentry は無効
+    assert data["auth0_enabled"] is False  # テストでは Auth0 は無効
 
 
 def test_logo_image_referenced(client):
@@ -86,3 +91,17 @@ def test_build_info_displayed(client):
     assert "abc123de" in html  # git_commit_short
     assert "42" in html  # github_run_number
     assert "2024-01-01T00:00:00Z" in html  # build_time
+
+
+def test_login_redirects_when_auth0_disabled(client):
+    """Auth0 無効時に /login が index へリダイレクトすることを確認する。"""
+    response = client.get("/login")
+    assert response.status_code == 302
+    assert response.headers["Location"].endswith("/")
+
+
+def test_profile_redirects_when_auth0_disabled(client):
+    """Auth0 無効時に /profile が index へリダイレクトすることを確認する。"""
+    response = client.get("/profile")
+    assert response.status_code == 302
+    assert response.headers["Location"].endswith("/")

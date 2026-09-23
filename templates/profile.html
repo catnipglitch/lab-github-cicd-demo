@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Profile - GitHub CI/CD Demo</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        .container {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 600px;
+            width: 100%;
+            padding: 40px;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        h1 {
+            color: #667eea;
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+        }
+        .avatar {
+            width: 96px;
+            height: 96px;
+            border-radius: 50%;
+            margin-bottom: 16px;
+            border: 3px solid #667eea;
+        }
+        .profile-info {
+            margin-top: 20px;
+        }
+        .profile-info dl {
+            display: grid;
+            grid-template-columns: 140px 1fr;
+            gap: 12px 16px;
+        }
+        .profile-info dt {
+            font-size: 0.85rem;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 600;
+        }
+        .profile-info dd {
+            font-size: 1rem;
+            color: #333;
+            word-wrap: break-word;
+        }
+        .actions {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #e0e0e0;
+        }
+        .actions a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 500;
+            padding: 8px 20px;
+            border-radius: 6px;
+            transition: background 0.2s;
+        }
+        .actions a:hover {
+            background: #f0f0f0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            {% if user.picture %}
+            <img src="{{ user.picture }}" alt="Avatar" class="avatar">
+            {% endif %}
+            <h1>{{ user.name }}</h1>
+            {% if user.email %}
+            <p style="color: #666;">{{ user.email }}</p>
+            {% endif %}
+        </div>
+
+        <div class="profile-info">
+            <dl>
+                <dt>User ID</dt>
+                <dd>{{ user.sub }}</dd>
+
+                {% if user.nickname %}
+                <dt>Nickname</dt>
+                <dd>{{ user.nickname }}</dd>
+                {% endif %}
+
+                {% if user.updated_at %}
+                <dt>Last Updated</dt>
+                <dd>{{ user.updated_at }}</dd>
+                {% endif %}
+            </dl>
+        </div>
+
+        <div class="actions">
+            <a href="/">Home</a>
+            <a href="/logout">Logout</a>
+        </div>
+    </div>
+</body>
+</html>

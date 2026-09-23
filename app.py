@@ -8,8 +8,10 @@ from pathlib import Path
 
 import sentry_sdk
 from dotenv import load_dotenv
-from flask import Flask, jsonify, render_template
+from flask import Flask, g, jsonify, redirect, render_template, request, url_for
 from sentry_sdk.integrations.flask import FlaskIntegration
+
+from auth import auth0_client
 
 
 def _get_sentry_dsn() -> str | None:
@@ -33,6 +35,7 @@ if dsn:
 
 
 app = Flask(__name__)
+app.secret_key = os.getenv("AUTH0_SECRET", os.urandom(32).hex())
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
@@ -48,17 +51,67 @@ def get_build_info() -> dict:
         "github_run_number": os.getenv("GITHUB_RUN_NUMBER", "N/A"),
         "python_version": sys.version.split()[0],
         "sentry_enabled": dsn is not None,
+        "auth0_enabled": auth0_client is not None,
         "deploy_time": datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S UTC"),
         "k_service": os.getenv("K_SERVICE", "N/A"),
         "k_revision": os.getenv("K_REVISION", "N/A"),
     }
 
 
+@app.before_request
+def store_request_context():
+    """Auth0 SDK にリクエストコンテキストを渡す。"""
+    g.store_options = {"request": request}
+
+
 @app.route("/")
-def index():
+async def index():
     """メインページ - ロゴとビルド情報を表示。"""
     build_info = get_build_info()
-    return render_template("index.html", build_info=build_info)
+    user = None
+    if auth0_client is not None:
+        user = await auth0_client.get_user(g.store_options)
+    return render_template("index.html", build_info=build_info, user=user)
+
+
+@app.route("/login")
+async def login():
+    """Auth0 ログインへリダイレクト。"""
+    if auth0_client is None:
+        return redirect(url_for("index"))
+    authorization_url = await auth0_client.start_interactive_login(
+        {}, g.store_options
+    )
+    return redirect(authorization_url)
+
+
+@app.route("/callback")
+async def callback():
+    """Auth0 コールバック処理。"""
+    if auth0_client is None:
+        return redirect(url_for("index"))
+    await auth0_client.complete_interactive_login(str(request.url), g.store_options)
+    return redirect(url_for("index"))
+
+
+@app.route("/profile")
+async def profile():
+    """ユーザープロフィール表示（要認証）。"""
+    if auth0_client is None:
+        return redirect(url_for("index"))
+    user = await auth0_client.get_user(g.store_options)
+    if not user:
+        return redirect(url_for("login"))
+    return render_template("profile.html", user=user)
+
+
+@app.route("/logout")
+async def logout():
+    """Auth0 ログアウト。"""
+    if auth0_client is None:
+        return redirect(url_for("index"))
+    logout_url = await auth0_client.logout(g.store_options)
+    return redirect(logout_url)
 
 
 @app.route("/health")
@@ -78,4 +131,5 @@ if __name__ == "__main__":
     port = int(os.getenv("PORT", 5000))
     logger.info(f"Starting Flask app on port {port}")
     logger.info(f"Sentry enabled: {dsn is not None}")
+    logger.info(f"Auth0 enabled: {auth0_client is not None}")
     app.run(host="0.0.0.0", port=port, debug=False)

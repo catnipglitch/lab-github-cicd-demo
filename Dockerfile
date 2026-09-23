@@ -37,7 +37,7 @@ ENV BUILD_TIME=${BUILD_TIME} \
 COPY --from=builder /app/.venv /app/.venv
 
 # アプリケーションコードをコピー
-COPY app.py ./
+COPY app.py auth.py ./
 COPY templates ./templates
 COPY pyproject.toml ./
 

@@ -6,7 +6,8 @@ readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
     "black>=25.9.0",
-    "flask>=3.0.0",
+    "auth0-server-python>=1.0.0b7",
+    "flask[async]>=3.0.0",
     "gunicorn>=22.0.0",
     "pytest>=8.4.2",
     "python-dotenv>=1.0.0",
